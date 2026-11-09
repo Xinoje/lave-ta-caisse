@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lave ta caisse – Réservation</title>
+<style>
+:root{--bg:#000;--card:#0f1416;--line:#1d2a2d;--cy:#5ce1e6;--tx:#fff;--mut:#9fb0b3;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:560px;margin:0 auto;padding:20px 16px 40px}
+h1{font-family:Impact,"Arial Narrow Bold",sans-serif;font-size:clamp(40px,12vw,64px);margin:8px 0 0;line-height:1;letter-spacing:1px;text-align:center}
+h1 span{color:var(--cy)}
+.sub{text-align:center;color:var(--mut);margin:8px 0 22px}
+.steps{display:flex;gap:6px;margin-bottom:16px}
+.steps i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.steps i.on{background:var(--cy)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+h2{font-size:18px;margin:0 0 12px;color:var(--cy)}
+.opt{display:block;width:100%;text-align:left;background:#000;color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;font:inherit;cursor:pointer}
+.opt b{display:block;font-size:16px}
+.opt small{color:var(--mut)}
+.opt.sel{border-color:var(--cy);box-shadow:0 0 0 1px var(--cy) inset}
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px}
+.d{flex:0 0 auto;min-width:64px;text-align:center;background:#000;color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:8px 6px;font:inherit;cursor:pointer}
+.d small{display:block;color:var(--mut);text-transform:uppercase;font-size:11px}
+.d b{font-size:20px}
+.d.sel{background:var(--cy);color:#000;border-color:var(--cy)}
+.d.sel small{color:#000}
+.d:disabled{opacity:.3;cursor:not-allowed}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.s{background:#000;color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:12px 0;font:inherit;cursor:pointer}
+.s.sel{background:var(--cy);color:#000;border-color:var(--cy);font-weight:700}
+.s:disabled{opacity:.3;text-decoration:line-through;cursor:not-allowed}
+label{display:block;font-size:13px;color:var(--mut);margin:12px 0 4px}
+input,select,textarea{width:100%;background:#000;color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);border-color:var(--cy)}
+.nav{display:flex;gap:10px;margin-top:16px}
+.btn{flex:1;border:0;border-radius:12px;padding:14px;font:inherit;font-weight:800;cursor:pointer;background:var(--cy);color:#000;text-transform:uppercase}
+.btn.g{background:transparent;color:var(--tx);border:1px solid var(--line);flex:.5}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.rec{margin:0;padding:0;list-style:none}
+.rec li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.rec li span:first-child{color:var(--mut)}
+.note{color:var(--mut);font-size:13px;margin-top:12px}
+.err{color:#ff8080;font-size:13px;margin-top:8px;min-height:16px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>LAVE TA <span>CAISSE</span></h1>
+<p class="sub">Redonnez à votre voiture son éclat d’origine !</p>
+<div class="steps" id="steps"><i></i><i></i><i></i><i></i></div>
+
+<div class="card" id="p1">
+<h2>1. Choisissez votre formule</h2>
+<button class="opt" data-f="Intérieur"><b>Intérieur</b><small>Aspiration, sièges (injecteur-extracteur), tapis, plastiques, vitres, désodorisation</small></button>
+<button class="opt" data-f="Extérieur"><b>Extérieur</b><small>Lavage complet, jantes et pneus, vitres, décontamination, finition brillante</small></button>
+<button class="opt" data-f="Intérieur + Extérieur"><b>Intérieur + Extérieur</b><small>La remise à neuf complète</small></button>
+<p class="note">Devis gratuit – tarifs selon le véhicule et la prestation.</p>
+<div class="nav"><button class="btn" id="n1" disabled>Suivant</button></div>
+</div>
+
+<div class="card hide" id="p2">
+<h2>2. Date et créneau</h2>
+<div class="days" id="days"></div>
+<div class="slots" id="slots"></div>
+<p class="note">Fermé le dimanche. Créneaux d’environ 2 h.</p>
+<div class="nav"><button class="btn g" data-b="1">Retour</button><button class="btn" id="n2" disabled>Suivant</button></div>
+</div>
+
+<div class="card hide" id="p3">
+<h2>3. Vos informations</h2>
+<label for="nom">Nom et prénom</label><input id="nom" autocomplete="name">
+<label for="tel">Téléphone</label><input id="tel" type="tel" autocomplete="tel">
+<label for="veh">Véhicule (marque, modèle)</label><input id="veh" placeholder="Ex : Peugeot 308">
+<label for="tai">Taille</label>
+<select id="tai"><option>Citadine</option><option>Berline / Compacte</option><option>SUV / Break</option><option>Utilitaire / Grand format</option></select>
+<label for="adr">Adresse ou lieu de la prestation</label><input id="adr" autocomplete="street-address">
+<label for="msg">Remarque (facultatif)</label><textarea id="msg" rows="2"></textarea>
+<div class="err" id="err"></div>
+<div class="nav"><button class="btn g" data-b="2">Retour</button><button class="btn" id="n3">Récapitulatif</button></div>
+</div>
+
+<div class="card hide" id="p4">
+<h2>4. Confirmez votre demande</h2>
+<ul class="rec" id="rec"></ul>
+<p class="note">Votre demande sera envoyée par e-mail : le message est déjà prêt, il suffit d’appuyer sur envoyer. Vous recevrez une confirmation et votre devis gratuit.</p>
+<div class="nav"><button class="btn g" data-b="3">Modifier</button><button class="btn" id="send">Envoyer par e-mail</button></div>
+<div class="err" id="ok" style="color:var(--cy)"></div>
+</div>
+</div>
+
+<script>
+var st={f:"",d:null,h:""},HOURS=["08:30","10:30","13:00","15:00","17:00","19:00"],taken={};
+try{taken=JSON.parse(localStorage.getItem("ltc_taken")||"{}")}catch(e){}
+var $=function(i){return document.getElementById(i)};
+var JS=["dim.","lun.","mar.","mer.","jeu.","ven.","sam."],MO=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+function key(d){return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+function show(n){for(var i=1;i<=4;i++){$("p"+i).classList.toggle("hide",i!==n);$("steps").children[i-1].classList.toggle("on",i<=n)}window.scrollTo(0,0)}
+show(1);
+document.querySelectorAll("[data-f]").forEach(function(b){b.onclick=function(){document.querySelectorAll("[data-f]").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");st.f=b.dataset.f;$("n1").disabled=false}});
+$("n1").onclick=function(){show(2)};
+function buildDays(){var c=$("days"),t=new Date();t.setHours(0,0,0,0);for(var i=0;i<21;i++){var d=new Date(t);d.setDate(t.getDate()+i);var b=document.createElement("button");b.className="d";b.innerHTML="<small>"+JS[d.getDay()]+"</small><b>"+d.getDate()+"</b><small>"+MO[d.getMonth()]+"</small>";if(d.getDay()===0)b.disabled=true;(function(d,b){b.onclick=function(){document.querySelectorAll(".d").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");st.d=d;st.h="";$("n2").disabled=true;buildSlots()}})(d,b);c.appendChild(b)}}
+function buildSlots(){var c=$("slots");c.innerHTML="";var now=new Date(),k=key(st.d);HOURS.forEach(function(h){var b=document.createElement("button");b.className="s";b.textContent=h.replace(":","h");var p=h.split(":"),dt=new Date(st.d);dt.setHours(+p[0],+p[1]);if(dt<now||(taken[k]||[]).indexOf(h)>-1)b.disabled=true;b.onclick=function(){document.querySelectorAll(".s").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");st.h=h;$("n2").disabled=false};c.appendChild(b)})}
+buildDays();
+$("n2").onclick=function(){show(3)};
+document.querySelectorAll("[data-b]").forEach(function(b){b.onclick=function(){show(+b.dataset.b)}});
+function dtxt(){return JS[st.d.getDay()]+" "+st.d.getDate()+" "+MO[st.d.getMonth()]+" à "+st.h.replace(":","h")}
+$("n3").onclick=function(){if(!$("nom").value.trim()||!$("tel").value.trim()||!$("veh").value.trim()||!$("adr").value.trim()){$("err").textContent="Merci de remplir tous les champs obligatoires.";return}$("err").textContent="";
+var r=[["Formule",st.f],["Date",dtxt()],["Nom",$("nom").value],["Téléphone",$("tel").value],["Véhicule",$("veh").value+" ("+$("tai").value+")"],["Lieu",$("adr").value]];if($("msg").value.trim())r.push(["Remarque",$("msg").value]);
+$("rec").innerHTML="";r.forEach(function(x){var li=document.createElement("li"),a=document.createElement("span"),b=document.createElement("span");a.textContent=x[0];b.textContent=x[1];b.style.textAlign="right";li.appendChild(a);li.appendChild(b);$("rec").appendChild(li)});show(4)};
+$("send").onclick=function(){var m="Bonjour, je souhaite réserver chez Lave ta caisse :\n• Formule : "+st.f+"\n• Créneau : "+dtxt()+"\n• Nom : "+$("nom").value+"\n• Tél : "+$("tel").value+"\n• Véhicule : "+$("veh").value+" ("+$("tai").value+")\n• Lieu : "+$("adr").value+($("msg").value.trim()?"\n• Remarque : "+$("msg").value:"")+"\nMerci de me confirmer le créneau et le devis.";
+try{navigator.clipboard.writeText(m)}catch(e){}
+try{var k=key(st.d);taken[k]=(taken[k]||[]).concat(st.h);localStorage.setItem("ltc_taken",JSON.stringify(taken))}catch(e){}
+$("ok").textContent="Votre application mail s’ouvre : appuyez sur envoyer pour valider votre demande.";
+window.open("mailto:Abdul.glzd@gmail.com?subject="+encodeURIComponent("Réservation Lave ta caisse – "+dtxt())+"&body="+encodeURIComponent(m),"_blank")};
+</script>
+</body>
+</html>
