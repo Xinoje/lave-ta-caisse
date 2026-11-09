@@ -72,7 +72,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);border-color
 <h2>2. Date et créneau</h2>
 <div class="days" id="days"></div>
 <div class="slots" id="slots"></div>
-<p class="note">Créneaux de 2 h, le mercredi, le samedi et le dimanche.</p>
+<p class="note">Créneaux de 2 h (2 h 30 si le véhicule est très sale), le mercredi, le samedi et le dimanche.</p>
 <div class="nav"><button class="btn g" data-b="1">Retour</button><button class="btn" id="n2" disabled>Suivant</button></div>
 </div>
 
@@ -109,12 +109,13 @@ show(1);
 document.querySelectorAll("[data-f]").forEach(function(b){b.onclick=function(){document.querySelectorAll("[data-f]").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");st.f=b.dataset.f;upd()}});
 var PR={"Intérieur":[30,45],"Extérieur":[15,25],"Intérieur + Extérieur":[40,65]};
 function price(){return st.f&&st.e!==""?PR[st.f][st.e]:null}
-function upd(){var p=price();$("n1").disabled=p===null;$("tot").textContent=p===null?"":"Prix : "+p+" €";document.querySelectorAll(".pr").forEach(function(s){var a=PR[s.dataset.p];s.textContent=a[0]===a[1]?a[0]+" €":a[0]+" – "+a[1]+" €"})}
+function upd(){st.h="";$("n2").disabled=true;if(st.d)buildSlots();var p=price();$("n1").disabled=p===null;$("tot").textContent=p===null?"":"Prix : "+p+" €";document.querySelectorAll(".pr").forEach(function(s){var a=PR[s.dataset.p];s.textContent=a[0]===a[1]?a[0]+" €":a[0]+" – "+a[1]+" €"})}
 document.querySelectorAll("[data-e]").forEach(function(b){b.onclick=function(){document.querySelectorAll("[data-e]").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");st.e=+b.dataset.e;upd()}});
 $("n1").onclick=function(){show(2)};
 upd();
+function endT(r){if(!st.e)return r[1];var p=r[0].split(":"),m=+p[0]*60+ +p[1]+150;return ("0"+Math.floor(m/60)).slice(-2)+":"+("0"+m%60).slice(-2)}
 function buildDays(){var c=$("days"),t=new Date();t.setHours(0,0,0,0);for(var i=0;i<21;i++){var d=new Date(t);d.setDate(t.getDate()+i);var b=document.createElement("button");b.className="d";b.innerHTML="<small>"+JS[d.getDay()]+"</small><b>"+d.getDate()+"</b><small>"+MO[d.getMonth()]+"</small>";if(!SL[d.getDay()])b.disabled=true;(function(d,b){b.onclick=function(){document.querySelectorAll(".d").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");st.d=d;st.h="";$("n2").disabled=true;buildSlots()}})(d,b);c.appendChild(b)}}
-function buildSlots(){var c=$("slots");c.innerHTML="";var now=new Date(),k=key(st.d);(SL[st.d.getDay()]||[]).forEach(function(r){var h=r[0],b=document.createElement("button");b.className="s";b.textContent=r[0].replace(":","h")+" – "+r[1].replace(":","h");var p=h.split(":"),dt=new Date(st.d);dt.setHours(+p[0],+p[1]);if(dt<now||(taken[k]||[]).indexOf(h)>-1)b.disabled=true;b.onclick=function(){document.querySelectorAll(".s").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");st.h=h;st.r=r[1];$("n2").disabled=false};c.appendChild(b)})}
+function buildSlots(){var c=$("slots");c.innerHTML="";var now=new Date(),k=key(st.d);(SL[st.d.getDay()]||[]).forEach(function(r){var h=r[0],b=document.createElement("button");b.className="s";b.textContent=r[0].replace(":","h")+" – "+endT(r).replace(":","h");var p=h.split(":"),dt=new Date(st.d);dt.setHours(+p[0],+p[1]);if(dt<now||(taken[k]||[]).indexOf(h)>-1)b.disabled=true;b.onclick=function(){document.querySelectorAll(".s").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");st.h=h;st.r=endT(r);$("n2").disabled=false};c.appendChild(b)})}
 buildDays();
 $("n2").onclick=function(){show(3)};
 document.querySelectorAll("[data-b]").forEach(function(b){b.onclick=function(){show(+b.dataset.b)}});
