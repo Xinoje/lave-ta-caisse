@@ -85,6 +85,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);border-color
 <select id="tai"><option>Citadine</option><option>Berline / Compacte</option><option>SUV / Break</option><option>Utilitaire / Grand format</option></select>
 <label for="adr">Adresse ou lieu de la prestation</label><input id="adr" autocomplete="street-address">
 <label for="msg">Remarque (facultatif)</label><textarea id="msg" rows="2"></textarea>
+<label for="ph">Photos du véhicule (facultatif)</label><input id="ph" type="file" accept="image/*" multiple>
+<p class="note" style="margin-top:6px">Pas obligatoire, mais ça nous aide à confirmer l’état et le prix.</p>
 <div class="err" id="err"></div>
 <div class="nav"><button class="btn g" data-b="2">Retour</button><button class="btn" id="n3">Récapitulatif</button></div>
 </div>
@@ -94,6 +96,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);border-color
 <ul class="rec" id="rec"></ul>
 <p class="note">Votre demande sera envoyée par e-mail : le message est déjà prêt, il suffit d’appuyer sur envoyer. Vous recevrez une confirmation et votre devis gratuit.</p>
 <div class="nav"><button class="btn g" data-b="3">Modifier</button><button class="btn" id="send">Envoyer par e-mail</button></div>
+<button class="btn" id="shp" style="display:none;margin-top:10px">Envoyer mes photos (facultatif)</button>
 <div class="err" id="ok" style="color:var(--cy)"></div>
 </div>
 </div>
@@ -121,12 +124,13 @@ $("n2").onclick=function(){show(3)};
 document.querySelectorAll("[data-b]").forEach(function(b){b.onclick=function(){show(+b.dataset.b)}});
 function dtxt(){return JS[st.d.getDay()]+" "+st.d.getDate()+" "+MO[st.d.getMonth()]+" de "+st.h.replace(":","h")+" à "+st.r.replace(":","h")}
 $("n3").onclick=function(){if(!$("nom").value.trim()||!$("tel").value.trim()||!$("veh").value.trim()||!$("adr").value.trim()){$("err").textContent="Merci de remplir tous les champs obligatoires.";return}$("err").textContent="";
-var r=[["Formule",st.f],["État",st.e?"Très sale":"Pas trop sale"],["Prix",price()+" €"],["Date",dtxt()],["Nom",$("nom").value],["Téléphone",$("tel").value],["Véhicule",$("veh").value+" ("+$("tai").value+")"],["Lieu",$("adr").value]];if($("msg").value.trim())r.push(["Remarque",$("msg").value]);
+var r=[["Formule",st.f],["État",st.e?"Très sale":"Pas trop sale"],["Prix",price()+" €"],["Date",dtxt()],["Nom",$("nom").value],["Téléphone",$("tel").value],["Véhicule",$("veh").value+" ("+$("tai").value+")"],["Lieu",$("adr").value]];if($("msg").value.trim())r.push(["Remarque",$("msg").value]);var n=$("ph").files.length;if(n)r.push(["Photos",n+" photo"+(n>1?"s":"")]);$("shp").style.display=n?"block":"none";
 $("rec").innerHTML="";r.forEach(function(x){var li=document.createElement("li"),a=document.createElement("span"),b=document.createElement("span");a.textContent=x[0];b.textContent=x[1];b.style.textAlign="right";li.appendChild(a);li.appendChild(b);$("rec").appendChild(li)});show(4)};
-$("send").onclick=function(){var m="Bonjour, je souhaite réserver chez Lave ta caisse :\n• Formule : "+st.f+" ("+(st.e?"très sale":"pas trop sale")+") – "+price()+" €\n• Créneau : "+dtxt()+"\n• Nom : "+$("nom").value+"\n• Tél : "+$("tel").value+"\n• Véhicule : "+$("veh").value+" ("+$("tai").value+")\n• Lieu : "+$("adr").value+($("msg").value.trim()?"\n• Remarque : "+$("msg").value:"")+"\nMerci de me confirmer le créneau et le devis.";
+$("shp").onclick=function(){var f=Array.prototype.slice.call($("ph").files),t="Photos de mon véhicule pour ma réservation Lave ta caisse ("+dtxt()+"). À envoyer à Abdul.glzd@gmail.com";if(navigator.canShare&&navigator.canShare({files:f})){navigator.share({files:f,title:"Photos véhicule",text:t}).catch(function(){})}else{$("ok").textContent="Joignez vos photos à l’e-mail qui s’ouvre avec le bouton Envoyer par e-mail."}};
+$("send").onclick=function(){var m="Bonjour, je souhaite réserver chez Lave ta caisse :\n• Formule : "+st.f+" ("+(st.e?"très sale":"pas trop sale")+") – "+price()+" €\n• Créneau : "+dtxt()+"\n• Nom : "+$("nom").value+"\n• Tél : "+$("tel").value+"\n• Véhicule : "+$("veh").value+" ("+$("tai").value+")\n• Lieu : "+$("adr").value+($("msg").value.trim()?"\n• Remarque : "+$("msg").value:"")+($("ph").files.length?"\n• Photos : "+$("ph").files.length+" jointes séparément":"")+"\nMerci de me confirmer le créneau et le devis.";
 try{navigator.clipboard.writeText(m)}catch(e){}
 try{var k=key(st.d);taken[k]=(taken[k]||[]).concat(st.h);localStorage.setItem("ltc_taken",JSON.stringify(taken))}catch(e){}
-$("ok").textContent="Votre application mail s’ouvre : appuyez sur envoyer pour valider votre demande.";
+$("ok").textContent="Votre application mail s’ouvre : appuyez sur envoyer pour valider votre demande."+($("ph").files.length?" Pensez à joindre vos photos, ou utilisez le bouton « Envoyer mes photos ».":"");
 window.open("mailto:Abdul.glzd@gmail.com?subject="+encodeURIComponent("Réservation Lave ta caisse – "+dtxt())+"&body="+encodeURIComponent(m),"_blank")};
 </script>
 </body>
