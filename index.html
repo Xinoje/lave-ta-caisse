@@ -38,6 +38,7 @@ summary{cursor:pointer;font-weight:700}
 details p{color:var(--mut);margin:8px 0 0}
 footer{text-align:center;color:var(--mut);font-size:13px;margin-top:24px}
 footer a{color:var(--cy)}
+footer details{text-align:left;border:0}
 .opt{display:block;width:100%;text-align:left;background:#000;color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;font:inherit;cursor:pointer}
 .opt b{display:block;font-size:16px}
 .opt small{color:var(--mut)}
@@ -113,8 +114,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);border-color
 <select id="tai"><option>Citadine</option><option>Berline / Compacte</option><option>SUV / Break</option><option>Utilitaire / Grand format</option></select>
 <label for="adr">Adresse ou lieu de la prestation</label><input id="adr" autocomplete="street-address">
 <label for="msg">Remarque (facultatif)</label><textarea id="msg" rows="2"></textarea>
-<label for="ph">Photos du véhicule (facultatif)</label><input id="ph" type="file" accept="image/*" multiple>
+<label for="ph">Photos du véhicule (facultatif, 5 maximum)</label><input id="ph" type="file" accept="image/*" multiple>
 <p class="note" style="margin-top:6px">Pas obligatoire, mais ça nous aide à confirmer l’état et le prix.</p>
+<label style="display:flex;gap:8px;align-items:flex-start;color:var(--tx);margin-top:16px"><input type="checkbox" id="cg" style="width:auto;margin-top:3px"><span>J’accepte que mes informations (et photos) soient enregistrées pour traiter ma demande (<a href="#conf" style="color:var(--cy)" onclick="document.getElementById('conf').open=true">confidentialité</a>).</span></label>
 <div class="err" id="err"></div>
 <div class="nav"><button class="btn g" data-b="2">Retour</button><button class="btn" id="n3">Récapitulatif</button></div>
 </div>
@@ -123,9 +125,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);border-color
 <h2>4. Confirmez votre demande</h2>
 <p class="micro-titre">Dernière étape avant l’envoi</p>
 <ul class="rec" id="rec"></ul>
-<p class="note">Votre demande sera envoyée par e-mail : le message est déjà prêt, il suffit d’appuyer sur envoyer. Vous recevrez une confirmation et votre devis gratuit.</p>
-<div class="nav"><button class="btn g" data-b="3">Modifier</button><button class="btn" id="send">Envoyer par e-mail</button></div>
-<button class="btn" id="shp" style="display:none;margin-top:10px">Envoyer mes photos (facultatif)</button>
+<p class="note">Votre demande est enregistrée directement. Nous vous recontactons pour confirmer le créneau et le devis.</p>
+<div class="nav"><button class="btn g" data-b="3">Modifier</button><button class="btn" id="send">Envoyer ma demande</button></div>
+<button class="btn g" id="mailb" style="display:none;margin-top:10px;flex:none;width:100%">Me prévenir aussi par e-mail (facultatif)</button>
 <div class="err" id="ok" style="color:var(--cy)"></div>
 </div>
 
@@ -151,12 +153,14 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);border-color
 <footer>
 <p>Lave ta caisse – Nettoyage auto intérieur et extérieur</p>
 <p><a href="https://www.instagram.com/lave_ta_caisse" rel="noopener" target="_blank">Instagram @lave_ta_caisse</a></p>
+<details id="conf"><summary>Confidentialité</summary><p>Les informations saisies (nom, téléphone, véhicule, adresse, photos) sont enregistrées uniquement pour traiter votre demande de réservation. Elles ne sont ni vendues ni utilisées à d’autres fins, et conservées le temps nécessaire au traitement de votre demande. Évitez de photographier votre plaque d’immatriculation ou des personnes. Les données sont hébergées chez Supabase. Pour les consulter, les corriger ou les supprimer : Abdul.glzd@gmail.com.</p></details>
 </footer>
 </div>
 
 <script>
 var st={f:"",e:"",d:null,h:""},SL={3:[["14:00","16:00"],["16:00","18:00"]],6:[["10:00","12:00"],["14:00","16:00"],["16:00","18:00"]],0:[["10:00","12:00"],["14:00","16:00"],["16:00","18:00"]]},taken={};
-try{taken=JSON.parse(localStorage.getItem("ltc_taken")||"{}")}catch(e){}
+var SB="https://mamprtsdnqyddszmtxny.supabase.co",KEY="sb_publishable_VKgw9KuUNnZvHQaClL5bQA_rxVrgj8i";
+function H(x){var h={apikey:KEY};for(var k in x)h[k]=x[k];return h}
 var $=function(i){return document.getElementById(i)};
 var JS=["dim.","lun.","mar.","mer.","jeu.","ven.","sam."],MO=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 function key(d){return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
@@ -172,19 +176,34 @@ upd();
 function endT(r){if(!st.e)return r[1];var p=r[0].split(":"),m=+p[0]*60+ +p[1]+150;return ("0"+Math.floor(m/60)).slice(-2)+":"+("0"+m%60).slice(-2)}
 function buildDays(){var c=$("days"),t=new Date();t.setHours(0,0,0,0);for(var i=0;i<21;i++){var d=new Date(t);d.setDate(t.getDate()+i);var b=document.createElement("button");b.className="d";b.innerHTML="<small>"+JS[d.getDay()]+"</small><b>"+d.getDate()+"</b><small>"+MO[d.getMonth()]+"</small>";if(!SL[d.getDay()])b.disabled=true;(function(d,b){b.onclick=function(){document.querySelectorAll(".d").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");st.d=d;st.h="";$("n2").disabled=true;buildSlots()}})(d,b);c.appendChild(b)}}
 function buildSlots(){var c=$("slots");c.innerHTML="";var now=new Date(),k=key(st.d);(SL[st.d.getDay()]||[]).forEach(function(r){var h=r[0],b=document.createElement("button");b.className="s";b.textContent=r[0].replace(":","h")+" – "+endT(r).replace(":","h");var p=h.split(":"),dt=new Date(st.d);dt.setHours(+p[0],+p[1]);if(dt<now||(taken[k]||[]).indexOf(h)>-1)b.disabled=true;b.onclick=function(){document.querySelectorAll(".s").forEach(function(x){x.classList.remove("sel")});b.classList.add("sel");st.h=h;st.r=endT(r);$("n2").disabled=false};c.appendChild(b)})}
+function loadTaken(){fetch(SB+"/rest/v1/creneaux_pris?select=jour,debut",{headers:H({})}).then(function(r){return r.ok?r.json():[]}).then(function(rows){rows.forEach(function(x){taken[x.jour]=(taken[x.jour]||[]).concat(x.debut)});if(st.d)buildSlots()}).catch(function(){})}
 buildDays();
+loadTaken();
 $("n2").onclick=function(){show(3)};
 document.querySelectorAll("[data-b]").forEach(function(b){b.onclick=function(){show(+b.dataset.b)}});
 function dtxt(){return JS[st.d.getDay()]+" "+st.d.getDate()+" "+MO[st.d.getMonth()]+" de "+st.h.replace(":","h")+" à "+st.r.replace(":","h")}
-$("n3").onclick=function(){if(!$("nom").value.trim()||!$("tel").value.trim()||!$("veh").value.trim()||!$("adr").value.trim()){$("err").textContent="Merci de remplir tous les champs obligatoires.";return}$("err").textContent="";
-var r=[["Formule",st.f],["État",st.e?"Très sale":"Pas trop sale"],["Prix",price()+" €"],["Date",dtxt()],["Nom",$("nom").value],["Téléphone",$("tel").value],["Véhicule",$("veh").value+" ("+$("tai").value+")"],["Lieu",$("adr").value]];if($("msg").value.trim())r.push(["Remarque",$("msg").value]);var n=$("ph").files.length;if(n)r.push(["Photos",n+" photo"+(n>1?"s":"")]);$("shp").style.display=n?"block":"none";
-$("rec").innerHTML="";r.forEach(function(x){var li=document.createElement("li"),a=document.createElement("span"),b=document.createElement("span");a.textContent=x[0];b.textContent=x[1];b.style.textAlign="right";li.appendChild(a);li.appendChild(b);$("rec").appendChild(li)});show(4)};
-$("shp").onclick=function(){var f=Array.prototype.slice.call($("ph").files),t="Photos de mon véhicule pour ma réservation Lave ta caisse ("+dtxt()+"). À envoyer à Abdul.glzd@gmail.com";if(navigator.canShare&&navigator.canShare({files:f})){navigator.share({files:f,title:"Photos véhicule",text:t}).catch(function(){})}else{$("ok").textContent="Joignez vos photos à l’e-mail qui s’ouvre avec le bouton Envoyer par e-mail."}};
-$("send").onclick=function(){var m="Bonjour, je souhaite réserver chez Lave ta caisse :\n• Formule : "+st.f+" ("+(st.e?"très sale":"pas trop sale")+") – "+price()+" €\n• Créneau : "+dtxt()+"\n• Nom : "+$("nom").value+"\n• Tél : "+$("tel").value+"\n• Véhicule : "+$("veh").value+" ("+$("tai").value+")\n• Lieu : "+$("adr").value+($("msg").value.trim()?"\n• Remarque : "+$("msg").value:"")+($("ph").files.length?"\n• Photos : "+$("ph").files.length+" jointes séparément":"")+"\nMerci de me confirmer le créneau et le devis.";
-try{navigator.clipboard.writeText(m)}catch(e){}
-try{var k=key(st.d);taken[k]=(taken[k]||[]).concat(st.h);localStorage.setItem("ltc_taken",JSON.stringify(taken))}catch(e){}
-$("ok").textContent="Votre application mail s’ouvre : appuyez sur envoyer pour valider votre demande."+($("ph").files.length?" Pensez à joindre vos photos, ou utilisez le bouton « Envoyer mes photos ».":"");
-window.open("mailto:Abdul.glzd@gmail.com?subject="+encodeURIComponent("Réservation Lave ta caisse – "+dtxt())+"&body="+encodeURIComponent(m),"_blank")};
+$("n3").onclick=function(){if(!$("nom").value.trim()||!$("tel").value.trim()||!$("veh").value.trim()||!$("adr").value.trim()){$("err").textContent="Merci de remplir tous les champs obligatoires.";return}
+if(!$("cg").checked){$("err").textContent="Merci de cocher la case pour accepter l’enregistrement de vos informations.";return}$("err").textContent="";
+var r=[["Formule",st.f],["État",st.e?"Très sale":"Pas trop sale"],["Prix",price()+" €"],["Date",dtxt()],["Nom",$("nom").value],["Téléphone",$("tel").value],["Véhicule",$("veh").value+" ("+$("tai").value+")"],["Lieu",$("adr").value]];if($("msg").value.trim())r.push(["Remarque",$("msg").value]);var n=Math.min($("ph").files.length,5);if(n)r.push(["Photos",n+" photo"+(n>1?"s":"")]);
+$("rec").innerHTML="";r.forEach(function(x){var li=document.createElement("li"),a=document.createElement("span"),b=document.createElement("span");a.textContent=x[0];b.textContent=x[1];b.style.textAlign="right";li.appendChild(a);li.appendChild(b);$("rec").appendChild(li)});$("ok").textContent="";$("send").disabled=false;$("send").style.display="";$("mailb").style.display="none";show(4)};
+function shrink(f){return new Promise(function(ok,ko){var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var s=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(function(b){b?ok(b):ko()},"image/jpeg",.8)};im.onerror=ko;im.src=u})}
+function openMail(){var n=Math.min($("ph").files.length,5),m="Bonjour, je souhaite réserver chez Lave ta caisse :\n• Formule : "+st.f+" ("+(st.e?"très sale":"pas trop sale")+") – "+price()+" €\n• Créneau : "+dtxt()+"\n• Nom : "+$("nom").value+"\n• Tél : "+$("tel").value+"\n• Véhicule : "+$("veh").value+" ("+$("tai").value+")\n• Lieu : "+$("adr").value+($("msg").value.trim()?"\n• Remarque : "+$("msg").value:"")+(n?"\n• Photos : "+n+" (à envoyer séparément)":"")+"\nMerci de me confirmer le créneau et le devis.";
+window.open("mailto:Abdul.glzd@gmail.com?subject="+encodeURIComponent("Réservation Lave ta caisse – "+dtxt())+"&body="+encodeURIComponent(m),"_blank")}
+$("mailb").onclick=openMail;
+$("send").onclick=async function(){var btn=$("send");btn.disabled=true;$("ok").style.color="var(--cy)";$("ok").textContent="Envoi en cours…";
+var id=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():(Date.now().toString(16)+Math.random().toString(16).slice(2)),k=key(st.d),saved=false;
+try{
+var r=await fetch(SB+"/rest/v1/creneaux_pris",{method:"POST",headers:H({"Content-Type":"application/json",Prefer:"return=minimal"}),body:JSON.stringify({jour:k,debut:st.h})});
+if(r.status===409){taken[k]=(taken[k]||[]).concat(st.h);$("ok").style.color="#ff8080";$("ok").textContent="Ce créneau vient d’être pris. Merci d’en choisir un autre.";btn.disabled=false;st.h="";$("n2").disabled=true;buildSlots();return}
+if(!r.ok)throw 0;
+var paths=[],fs=Array.prototype.slice.call($("ph").files,0,5);
+for(var i=0;i<fs.length;i++){try{var b=await shrink(fs[i]),p=id+"/"+(i+1)+".jpg",u=await fetch(SB+"/storage/v1/object/photos/"+p,{method:"POST",headers:H({"Content-Type":"image/jpeg"}),body:b});if(u.ok)paths.push(p)}catch(e){}}
+var q=await fetch(SB+"/rest/v1/reservations",{method:"POST",headers:H({"Content-Type":"application/json",Prefer:"return=minimal"}),body:JSON.stringify({id:id,formule:st.f,etat:st.e?"Très sale":"Pas trop sale",prix:price(),creneau:dtxt(),nom:$("nom").value,telephone:$("tel").value,vehicule:$("veh").value,taille:$("tai").value,lieu:$("adr").value,remarque:$("msg").value,photos:paths})});
+if(!q.ok)throw 0;
+saved=true;taken[k]=(taken[k]||[]).concat(st.h)
+}catch(e){}
+if(saved){$("ok").textContent="Demande envoyée ! Nous vous recontactons pour confirmer votre rendez-vous.";btn.style.display="none";$("mailb").style.display="block"}
+else{$("ok").style.color="#ff8080";$("ok").textContent="Envoi direct impossible : votre application mail s’ouvre, appuyez sur envoyer.";btn.disabled=false;openMail()}};
 </script>
 </body>
 </html>
