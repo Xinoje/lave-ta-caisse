@@ -3,7 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lave ta caisse – Réservation</title>
+<title>Lave ta caisse – Nettoyage auto intérieur et extérieur, réservation en ligne</title>
+<meta name="description" content="Lave ta caisse : nettoyage de voiture intérieur et extérieur, désodorisation, finition brillante. Réservez votre créneau en ligne (mercredi, samedi, dimanche). Prix à partir de 15 €.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#000000">
+<link rel="canonical" href="https://abdulglzd-gif.github.io/lave-ta-caisse/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Lave ta caisse">
+<meta property="og:title" content="Lave ta caisse – Nettoyage auto intérieur et extérieur">
+<meta property="og:description" content="Réservez en ligne le nettoyage de votre voiture. Prix selon l’état du véhicule.">
+<meta property="og:url" content="https://abdulglzd-gif.github.io/lave-ta-caisse/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"AutoWash","name":"Lave ta caisse","description":"Nettoyage de voiture intérieur et extérieur, réservation en ligne.","url":"https://abdulglzd-gif.github.io/lave-ta-caisse/","sameAs":["https://www.instagram.com/lave_ta_caisse"],"priceRange":"15 € - 65 €","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":"Wednesday","opens":"14:00","closes":"18:30"},{"@type":"OpeningHoursSpecification","dayOfWeek":["Saturday","Sunday"],"opens":"10:00","closes":"18:30"}]}</script>
 <style>
 :root{--bg:#000;--card:#0f1416;--line:#1d2a2d;--cy:#5ce1e6;--tx:#fff;--mut:#9fb0b3;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
@@ -17,6 +30,14 @@ h1 span{color:var(--cy)}
 .steps i.on{background:var(--cy)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
 h2{font-size:18px;margin:0 0 12px;color:var(--cy)}
+.micro-titre{margin:-8px 0 12px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.seo h3{font-size:16px;margin:12px 0 4px}
+.seo ul{margin:0;padding-left:18px;color:var(--mut);line-height:1.5}
+details{border-bottom:1px solid var(--line);padding:10px 0}
+summary{cursor:pointer;font-weight:700}
+details p{color:var(--mut);margin:8px 0 0}
+footer{text-align:center;color:var(--mut);font-size:13px;margin-top:24px}
+footer a{color:var(--cy)}
 .opt{display:block;width:100%;text-align:left;background:#000;color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;font:inherit;cursor:pointer}
 .opt b{display:block;font-size:16px}
 .opt small{color:var(--mut)}
@@ -52,16 +73,21 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);border-color
 </head>
 <body>
 <div class="w">
+<header>
 <h1>LAVE TA <span>CAISSE</span></h1>
-<p class="sub">Redonnez à votre voiture son éclat d’origine !</p>
+<p class="sub">Nettoyage auto intérieur et extérieur. Redonnez à votre voiture son éclat d’origine !</p>
+</header>
+<main>
 <div class="steps" id="steps"><i></i><i></i><i></i><i></i></div>
 
 <div class="card" id="p1">
 <h2>1. Choisissez votre formule</h2>
+<p class="micro-titre">Intérieur, extérieur ou complet</p>
 <button class="opt" data-f="Intérieur"><b>Intérieur<span class="pr" data-p="Intérieur"></span></b><small>Aspiration, sièges (injecteur-extracteur), tapis, plastiques, vitres, désodorisation</small></button>
 <button class="opt" data-f="Extérieur"><b>Extérieur<span class="pr" data-p="Extérieur"></span></b><small>Lavage complet, jantes et pneus, vitres, décontamination, finition brillante</small></button>
 <button class="opt" data-f="Intérieur + Extérieur"><b>Intérieur + Extérieur<span class="pr" data-p="Intérieur + Extérieur"></span></b><small>La remise à neuf complète</small></button>
 <h2 style="margin-top:16px">État du véhicule</h2>
+<p class="micro-titre">Le prix dépend de la saleté</p>
 <div class="slots" style="grid-template-columns:1fr 1fr"><button class="e" data-e="0">Pas trop sale</button><button class="e" data-e="1">Très sale</button></div>
 <p class="note" id="tot" style="color:var(--cy);font-size:20px;font-weight:700"></p>
 <p class="note">Prix selon l’état du véhicule.</p>
@@ -70,6 +96,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);border-color
 
 <div class="card hide" id="p2">
 <h2>2. Date et créneau</h2>
+<p class="micro-titre">Mercredi, samedi et dimanche</p>
 <div class="days" id="days"></div>
 <div class="slots" id="slots"></div>
 <p class="note">Créneaux de 2 h (2 h 30 si le véhicule est très sale), le mercredi, le samedi et le dimanche.</p>
@@ -78,6 +105,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);border-color
 
 <div class="card hide" id="p3">
 <h2>3. Vos informations</h2>
+<p class="micro-titre">Pour confirmer votre rendez-vous</p>
 <label for="nom">Nom et prénom</label><input id="nom" autocomplete="name">
 <label for="tel">Téléphone</label><input id="tel" type="tel" autocomplete="tel">
 <label for="veh">Véhicule (marque, modèle)</label><input id="veh" placeholder="Ex : Peugeot 308">
@@ -85,17 +113,45 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);border-color
 <select id="tai"><option>Citadine</option><option>Berline / Compacte</option><option>SUV / Break</option><option>Utilitaire / Grand format</option></select>
 <label for="adr">Adresse ou lieu de la prestation</label><input id="adr" autocomplete="street-address">
 <label for="msg">Remarque (facultatif)</label><textarea id="msg" rows="2"></textarea>
+<label for="ph">Photos du véhicule (facultatif)</label><input id="ph" type="file" accept="image/*" multiple>
+<p class="note" style="margin-top:6px">Pas obligatoire, mais ça nous aide à confirmer l’état et le prix.</p>
 <div class="err" id="err"></div>
 <div class="nav"><button class="btn g" data-b="2">Retour</button><button class="btn" id="n3">Récapitulatif</button></div>
 </div>
 
 <div class="card hide" id="p4">
 <h2>4. Confirmez votre demande</h2>
+<p class="micro-titre">Dernière étape avant l’envoi</p>
 <ul class="rec" id="rec"></ul>
 <p class="note">Votre demande sera envoyée par e-mail : le message est déjà prêt, il suffit d’appuyer sur envoyer. Vous recevrez une confirmation et votre devis gratuit.</p>
 <div class="nav"><button class="btn g" data-b="3">Modifier</button><button class="btn" id="send">Envoyer par e-mail</button></div>
+<button class="btn" id="shp" style="display:none;margin-top:10px">Envoyer mes photos (facultatif)</button>
 <div class="err" id="ok" style="color:var(--cy)"></div>
 </div>
+
+<section class="card seo" style="margin-top:16px" aria-labelledby="prest">
+<h2 id="prest">Nos prestations de nettoyage auto</h2>
+<p class="micro-titre">Intérieur, extérieur ou complet</p>
+<h3>Nettoyage intérieur</h3>
+<ul><li>Aspiration complète de l’habitacle et du coffre</li><li>Nettoyage approfondi des sièges avec injecteur-extracteur</li><li>Tapis, moquettes, plastiques, tableaux de bord et portières</li><li>Vitres intérieures, finitions et désodorisation</li></ul>
+<h3>Nettoyage extérieur</h3>
+<ul><li>Prélavage et lavage complet de la carrosserie</li><li>Jantes, pneus et vitres</li><li>Décontamination de la carrosserie</li><li>Finition brillante et protection adaptée</li></ul>
+</section>
+
+<section class="card seo" style="margin-top:16px" aria-labelledby="faq">
+<h2 id="faq">Questions fréquentes</h2>
+<p class="micro-titre">Tout savoir avant de réserver</p>
+<details><summary>Combien de temps dure un nettoyage ?</summary><p>Comptez 2 h, ou 2 h 30 si le véhicule est très sale.</p></details>
+<details><summary>Quels jours puis-je réserver ?</summary><p>Le mercredi après-midi, ainsi que le samedi et le dimanche.</p></details>
+<details><summary>Comment sont calculés les prix ?</summary><p>Selon la formule choisie et l’état du véhicule : de 15 € à 65 €.</p></details>
+<details><summary>Dois-je envoyer des photos de ma voiture ?</summary><p>Ce n’est pas obligatoire, mais des photos nous aident à confirmer l’état du véhicule et le prix.</p></details>
+</section>
+</main>
+
+<footer>
+<p>Lave ta caisse – Nettoyage auto intérieur et extérieur</p>
+<p><a href="https://www.instagram.com/lave_ta_caisse" rel="noopener" target="_blank">Instagram @lave_ta_caisse</a></p>
+</footer>
 </div>
 
 <script>
@@ -121,12 +177,13 @@ $("n2").onclick=function(){show(3)};
 document.querySelectorAll("[data-b]").forEach(function(b){b.onclick=function(){show(+b.dataset.b)}});
 function dtxt(){return JS[st.d.getDay()]+" "+st.d.getDate()+" "+MO[st.d.getMonth()]+" de "+st.h.replace(":","h")+" à "+st.r.replace(":","h")}
 $("n3").onclick=function(){if(!$("nom").value.trim()||!$("tel").value.trim()||!$("veh").value.trim()||!$("adr").value.trim()){$("err").textContent="Merci de remplir tous les champs obligatoires.";return}$("err").textContent="";
-var r=[["Formule",st.f],["État",st.e?"Très sale":"Pas trop sale"],["Prix",price()+" €"],["Date",dtxt()],["Nom",$("nom").value],["Téléphone",$("tel").value],["Véhicule",$("veh").value+" ("+$("tai").value+")"],["Lieu",$("adr").value]];if($("msg").value.trim())r.push(["Remarque",$("msg").value]);
+var r=[["Formule",st.f],["État",st.e?"Très sale":"Pas trop sale"],["Prix",price()+" €"],["Date",dtxt()],["Nom",$("nom").value],["Téléphone",$("tel").value],["Véhicule",$("veh").value+" ("+$("tai").value+")"],["Lieu",$("adr").value]];if($("msg").value.trim())r.push(["Remarque",$("msg").value]);var n=$("ph").files.length;if(n)r.push(["Photos",n+" photo"+(n>1?"s":"")]);$("shp").style.display=n?"block":"none";
 $("rec").innerHTML="";r.forEach(function(x){var li=document.createElement("li"),a=document.createElement("span"),b=document.createElement("span");a.textContent=x[0];b.textContent=x[1];b.style.textAlign="right";li.appendChild(a);li.appendChild(b);$("rec").appendChild(li)});show(4)};
-$("send").onclick=function(){var m="Bonjour, je souhaite réserver chez Lave ta caisse :\n• Formule : "+st.f+" ("+(st.e?"très sale":"pas trop sale")+") – "+price()+" €\n• Créneau : "+dtxt()+"\n• Nom : "+$("nom").value+"\n• Tél : "+$("tel").value+"\n• Véhicule : "+$("veh").value+" ("+$("tai").value+")\n• Lieu : "+$("adr").value+($("msg").value.trim()?"\n• Remarque : "+$("msg").value:"")+"\nMerci de me confirmer le créneau et le devis.";
+$("shp").onclick=function(){var f=Array.prototype.slice.call($("ph").files),t="Photos de mon véhicule pour ma réservation Lave ta caisse ("+dtxt()+"). À envoyer à Abdul.glzd@gmail.com";if(navigator.canShare&&navigator.canShare({files:f})){navigator.share({files:f,title:"Photos véhicule",text:t}).catch(function(){})}else{$("ok").textContent="Joignez vos photos à l’e-mail qui s’ouvre avec le bouton Envoyer par e-mail."}};
+$("send").onclick=function(){var m="Bonjour, je souhaite réserver chez Lave ta caisse :\n• Formule : "+st.f+" ("+(st.e?"très sale":"pas trop sale")+") – "+price()+" €\n• Créneau : "+dtxt()+"\n• Nom : "+$("nom").value+"\n• Tél : "+$("tel").value+"\n• Véhicule : "+$("veh").value+" ("+$("tai").value+")\n• Lieu : "+$("adr").value+($("msg").value.trim()?"\n• Remarque : "+$("msg").value:"")+($("ph").files.length?"\n• Photos : "+$("ph").files.length+" jointes séparément":"")+"\nMerci de me confirmer le créneau et le devis.";
 try{navigator.clipboard.writeText(m)}catch(e){}
 try{var k=key(st.d);taken[k]=(taken[k]||[]).concat(st.h);localStorage.setItem("ltc_taken",JSON.stringify(taken))}catch(e){}
-$("ok").textContent="Votre application mail s’ouvre : appuyez sur envoyer pour valider votre demande.";
+$("ok").textContent="Votre application mail s’ouvre : appuyez sur envoyer pour valider votre demande."+($("ph").files.length?" Pensez à joindre vos photos, ou utilisez le bouton « Envoyer mes photos ».":"");
 window.open("mailto:Abdul.glzd@gmail.com?subject="+encodeURIComponent("Réservation Lave ta caisse – "+dtxt())+"&body="+encodeURIComponent(m),"_blank")};
 </script>
 </body>
